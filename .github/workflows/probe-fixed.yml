@@ -1,0 +1,19 @@
+name: probe-fixed
+on:
+  push:
+    branches:
+      - probe-a
+  pull_request:
+    branches:
+      - probe-a
+concurrency:
+  group: probe-fixed-${{ github.event_name == 'pull_request' && github.ref || 'push' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  queue: max
+permissions:
+  contents: read
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "event ${{ github.event_name }} sha ${{ github.sha }}"; sleep 45
