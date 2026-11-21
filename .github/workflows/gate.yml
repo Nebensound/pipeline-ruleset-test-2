@@ -1,0 +1,17 @@
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - release
+
+permissions:
+  contents: read
+
+jobs:
+  nebensound:
+    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@0204847a9015c4c91cad8b7c1d1a4249e5797727 # 2026-11-21
+    permissions:
+      contents: write
