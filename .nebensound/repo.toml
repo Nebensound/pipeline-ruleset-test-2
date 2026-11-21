@@ -1,6 +1,7 @@
 # A temporary caller of the central pipeline, for measuring its release stage.
 [repo]
 pipeline = "none"
+release = "two-stage"
 
 [component.notes]
 path = "notes"
