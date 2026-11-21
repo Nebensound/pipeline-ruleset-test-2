@@ -1,0 +1,7 @@
+# A temporary caller of the central pipeline, for measuring its release stage.
+[repo]
+pipeline = "none"
+
+[component.notes]
+path = "notes"
+pipeline = "none"
