@@ -1,7 +1,7 @@
-# A temporary caller of the central pipeline, for measuring its release stage.
+# A temporary caller of the central pipeline, for measuring its runs.
 [repo]
+audience = "public"
 pipeline = "none"
-release = "two-stage"
 
 [component.notes]
 path = "notes"
