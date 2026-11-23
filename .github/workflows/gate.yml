@@ -2,16 +2,27 @@ name: gate
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
   push:
     branches:
       - main
-      - release
+      - pre
+      - pre-*
 
 permissions:
   contents: read
 
 jobs:
   nebensound:
-    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@0204847a9015c4c91cad8b7c1d1a4249e5797727 # 2026-11-21
+    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@1599352f40839fe57e2224add0224ddd35683e44 # 2026-11-23
     permissions:
       contents: write
+      pull-requests: read
+      id-token: write
+      packages: write
+      attestations: write
+      deployments: write
