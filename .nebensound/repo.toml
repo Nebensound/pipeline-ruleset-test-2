@@ -1,6 +1,7 @@
 # A temporary caller of the central pipeline, for measuring its runs.
 [repo]
 audience = "public"
+minimum-version = "0.1.0"
 pipeline = "none"
 
 [component.notes]
