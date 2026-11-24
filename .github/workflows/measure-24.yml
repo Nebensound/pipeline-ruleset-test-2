@@ -1,0 +1,55 @@
+name: measure-24
+
+# Measurement for the release binary of the pipeline: does `gh release
+# verify-asset` work with the job's own read-only token?
+
+on:
+  push:
+    branches:
+      - measure-24
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    name: measure (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - runner: ubuntu-22.04
+            target: x86_64-unknown-linux-musl
+          - runner: macos-latest
+            target: aarch64-apple-darwin
+          - runner: macos-26-intel
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Measure
+        shell: bash {0}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ matrix.target }}
+          WSHA: ${{ job.workflow_sha }}
+          WREF: ${{ job.workflow_ref }}
+          WREPO: ${{ job.workflow_repository }}
+        run: |
+          echo "job.workflow_sha=$WSHA job.workflow_ref=$WREF job.workflow_repository=$WREPO"
+          echo "ImageOS=${ImageOS:-} ImageVersion=${ImageVersion:-} bash=$BASH_VERSION"
+          command -v gh; gh --version
+          command -v cargo rustup || echo "no cargo or rustup on PATH"
+          gh api rate_limit --jq .resources.core
+          cd "$RUNNER_TEMP"
+          asset="nebensound-repo-$TARGET.tar.gz"
+          curl -fsSLO "https://github.com/Nebensound/pipeline/releases/download/v0.0.79/$asset"; echo "download rc=$?"
+          gh release verify-asset v0.0.79 "$asset" -R Nebensound/pipeline; echo "verify rc=$?"
+          cp "$asset" tampered.tar.gz; printf x >> tampered.tar.gz
+          gh release verify-asset v0.0.79 tampered.tar.gz -R Nebensound/pipeline; echo "tampered rc=$?"
+          gh release verify-asset v0.0.78 "$asset" -R Nebensound/pipeline; echo "wrong tag rc=$?"
+          curl -fsSLO "https://github.com/Nebensound/pipeline/releases/download/v0.0.67/$asset"; echo "release without asset: download rc=$?"
+          env -u GH_TOKEN gh release verify-asset v0.0.79 "$asset" -R Nebensound/pipeline; echo "without token rc=$?"
+          tar -xzf "$asset" nebensound-repo && ./nebensound-repo --version; echo "start rc=$?"
+          gh api rate_limit --jq .resources.core
