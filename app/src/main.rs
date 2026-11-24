@@ -1,7 +1,6 @@
-//! A program for measuring the release assets of the pipeline.
+//! A program for measuring the release assets of the pipeline: it prints its
+//! name and its version, whatever it is called with.
 
 fn main() {
-    if std::env::args().nth(1).as_deref() == Some("--version") {
-        println!("{}", app::version());
-    }
+    println!("{}", app::version());
 }
