@@ -7,3 +7,8 @@ pipeline = "none"
 [component.notes]
 path = "notes"
 pipeline = "none"
+
+# A program whose release carries its archives.
+[component.app]
+path = "app"
+pipeline = "rust-binary"

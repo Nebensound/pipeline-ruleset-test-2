@@ -1,0 +1,6 @@
+[package]
+name = "app"
+edition = "2024"
+description = "A program for measuring the release assets of the pipeline."
+license = "MIT"
+publish = false
