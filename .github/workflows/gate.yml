@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   nebensound:
-    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@e59b1dfc2197218a8531cb12f013907754197954 # 2026-11-23
+    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@8c3f4a3a9132807f656c22358aa02d53c0bfbdcf # Nebensound/pipeline#209, branch refactor/tool-at-root
     permissions:
       contents: write
       pull-requests: read
