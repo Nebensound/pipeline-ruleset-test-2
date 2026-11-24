@@ -1,0 +1,24 @@
+name: evidence-24-caller
+
+# The workflow of the pull request for the release binary, called as a caller
+# calls it: every job hands the action `tool` the workflow's own commit, which
+# carries no release, so every job builds the tool from source and says why.
+
+on:
+  push:
+    branches:
+      - evidence-24
+
+permissions:
+  contents: read
+
+jobs:
+  nebensound:
+    uses: Nebensound/pipeline/.github/workflows/nebensound.yml@138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
+      packages: write
+      attestations: write
+      deployments: write

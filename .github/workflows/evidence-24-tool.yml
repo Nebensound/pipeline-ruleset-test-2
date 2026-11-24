@@ -1,0 +1,76 @@
+name: evidence-24-tool
+
+# The action `tool` of the pull request for the release binary, handed the
+# commit of the release v0.0.79, in every job a caller's run has: Declare
+# (with the phase 0 of v0.0.79), and a job on each macOS runner of the builds.
+# Then the ways it falls back to a build from source.
+
+on:
+  push:
+    branches:
+      - evidence-24
+
+permissions:
+  contents: read
+
+jobs:
+  declare:
+    name: Declare with the released binary of v0.0.79
+    if: ${{ github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Get the tool
+        uses: Nebensound/pipeline/.github/actions/tool@138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+        with:
+          commit: 48418aaa9a28f6e7e000758461fa443b8cf3e4f6
+          repository: Nebensound/pipeline
+      - name: Run phase 0
+        uses: Nebensound/pipeline/.github/actions/phase0@48418aaa9a28f6e7e000758461fa443b8cf3e4f6
+      - name: Toolchains after the job
+        run: rustup toolchain list
+
+  fetch:
+    name: Get the tool (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, macos-latest, macos-26-intel]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Get the tool
+        uses: Nebensound/pipeline/.github/actions/tool@138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+        with:
+          commit: 48418aaa9a28f6e7e000758461fa443b8cf3e4f6
+          repository: Nebensound/pipeline
+      - name: Toolchains after the job
+        run: |
+          nebensound-repo --version
+          rustup toolchain list
+
+  no-release:
+    name: A commit without a release
+    if: ${{ github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the tool
+        uses: Nebensound/pipeline/.github/actions/tool@138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+        with:
+          commit: 138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+          repository: Nebensound/pipeline
+
+  gh-missing:
+    name: No gh on the runner
+    if: ${{ github.event.repository.visibility == 'public' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Take gh away
+        run: sudo rm -f "$(command -v gh)" && ! command -v gh
+      - name: Get the tool
+        uses: Nebensound/pipeline/.github/actions/tool@138b3f2015cf39ba93744bf9a9c69d12cdb993d4
+        with:
+          commit: 48418aaa9a28f6e7e000758461fa443b8cf3e4f6
+          repository: Nebensound/pipeline
