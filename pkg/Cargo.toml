@@ -1,0 +1,9 @@
+[package]
+name = "pkg"
+version = "0.0.0"
+edition = "2024"
+description = "A library that requires lib by path."
+license = "MIT"
+
+[dependencies]
+lib = { path = "../lib" }

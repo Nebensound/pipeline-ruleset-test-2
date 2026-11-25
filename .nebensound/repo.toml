@@ -12,3 +12,13 @@ pipeline = "none"
 [component.app]
 path = "app"
 pipeline = "rust-binary"
+
+# Two libraries for the private registry, `pkg` requiring `lib` by path: the
+# base of a pull request that shows `unreleased-requirement`.
+[component.lib]
+path = "lib"
+pipeline = "rust-library"
+
+[component.pkg]
+path = "pkg"
+pipeline = "rust-library"
